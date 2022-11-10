@@ -1,0 +1,24 @@
+#student-table {
+    max-height: 400px;
+    overflow: scroll;
+}
+
+th, tr {
+    width: 33%;
+}
+
+.present {
+    color: gray;
+    font-style: italic;
+    background-color: aliceblue;
+}
+
+.absent {
+    color: black;
+    font-weight: bold;
+    background-color: bisque;
+}
+
+[v-cloak] { /*sets v-cloak to be hidden while Vue is loading*/
+    display: none;
+}

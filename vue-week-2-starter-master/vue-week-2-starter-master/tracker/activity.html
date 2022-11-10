@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Practice Tracker</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css" type="text/css">
+</head>
+
+<body>
+    <div id="app" v-cloak> <!--Vue directive, hides the app while Vue is loading. Hides the error alerts that can be seen on slower internet connections-->
+
+        
+        <h1 class="text-center">{{activity}} Time Tracker</h1> <!--displays the name of the activity-->
+
+        <div id="add-hours" class="card">
+            <h2 class="card-header">Add Records</h2>
+
+            <div class="card-body">
+                <div class="alert alert-danger" v-if="errors.length > 0"> <!--v-if will show message if there are validation errors -->
+                    <ul>
+                        <li v-for="error in errors">{{error}}</li> <!--v-for will show a list of validation errors from form-->
+                        
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <!-- TODO display name of activity in the label -->
+                    <label class="form-label" for="date">What date did you do this activity?</label>
+
+                    <input id="date" class="form-control" type="date" v-model="dateString"> <!--v-model connects date input to dateString data in app-->
+                    
+                    <small id="date-help" class="form-text text-muted">
+                        Date must be today or in the past.
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="hours">How many hours did you practice for?</label>
+
+                    <input id="hours" class="form-control" type="number" min="0" max="24" v-model.number="hours"> <!--v-model connects hours input to the app. Number modifer ensures input will be numeric-->
+                    
+                    <small id="hours-help" class="form-text text-muted">
+                        Enter a number of hours, more than 0, up to a maximum of 24
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="type">What type?</label>
+
+                    <select class="form-control" v-model="type"> <!--v-model connects type to type array-->
+                        <option v-for="activityType in types">{{activityType}}</option> <!--v-for loops through types array, creating 1 option for each activity type in array-->
+                    </select>
+                </div>
+
+                <div class="form-label pb-2">
+                    What media?
+                </div>
+
+                <div class="form-check-inline">
+                    <input id="media1" class="form-check-input" type="radio" value="Traditional" v-model="medium"> <!--v-model connects radio buttons to app. Value attribute ensures radio button is only one or the other-->
+                    
+                    <label class="form-check-label" for="media1">Traditional</label>
+                </div>
+
+                <div class="form-check-inline">
+                    <input id="media2" class="form-check-input" type="radio" value="Digital" v-model="medium"> <!--v-model connects radio buttons to app. Value attribute ensures radio button is only one or the other-->
+                    
+                    <label class="form-check-label" for="media2">Digital</label>
+                </div>
+
+                <div>
+                    <button class="btn btn-primary mt-2" type="button" v-on:click="submit">Add record</button> <!--v-on:click calls submit method; giVes functionality to submit button-->
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-header">Activity Records</h2>
+
+            <div class="card-body">
+
+                <h3>{{totalRecordsMessage}}</h3> <!--calls computed property to display record total-->
+
+                <div id="records">
+                    <table class="table table-hover">
+                        <tr>
+                            <th>Date</th>
+                            <th>How many hours?</th>
+                            <th>Type</th>
+                            <th>Media</th>
+                        </tr>
+
+                        <tr v-for="record in activityRecords"> <!--v-for creates one table row for each activity record -->
+                            <td>{{shortDate(record.date)}}</td>
+                            <td>{{record.hours}}</td>
+                            <td>{{record.type}}</td>
+                            <td>{{record.medium}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card">
+            <h2 class="card-header">Summary</h2>
+
+            <div class="card-body">
+                <label>You have practiced a total of {{totalHours}} hours</label> <!-- totalHours is computed property to calculate the total hours -->
+
+                <!-- Challenge question! Display a list of the total hours for each type.  -->
+          
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let app = Vue.createApp({
+            data() {
+                return {
+                    activity: 'Practice Art',
+                    activityRecords: [], //array holds the input data?
+
+                    dateString: '', //propeties connected to the v-model form inputs. Date data is kept in string form
+                    hours: 1,
+                    type: 'Sketching',
+                    medium: 'Traditional',
+
+                    types: ['Sketching', 'Drawing', 'Painting'], //array items used in option select choices
+
+                    errors: [] // collects errots for validation
+                }
+            },
+            methods: {
+                submit() {
+
+                    this.errors = [] //assuming no errors
+
+                    let date = new Date(this.dateString) //converts dateString into date JS object
+                   
+                    if(!this.dateString || this.dateString === 'Invalid Date' || date > new Date()) {//is date a valid date (today or past)? Date in the future is > than date in the past.
+                        this.errors.push('Select a valid date, today or in the past.')
+                    }
+
+                    if(this.hours <= 0 || this.hours > 24) { 
+                        this.errors.push('The number of hours must be greater than or equal to 24')
+                    }
+
+                    if(!this.type) {
+                        this.errors,push('Select a type')
+                    }
+
+                    if(!this.medium) {
+                        this.errors.push('Select a medium')
+                    }
+
+                    if(this.errors.length === 0){
+                        let record = {
+                            date: date,
+                            hours: this.hours,
+                            type: this.type,
+                            medium: this.medium
+                        }
+
+                        this.activityRecords.push(record) // appends to empty array
+
+                        
+                        this.activityRecords.sort(function(r1, r2) {//sorts activity records. Sort function must use a function as an argument to sort the objects. r1 & r2 are generic records
+                            return r1.date.getTime() - r2.date.getTime() //sorts with oldest records 1st. getTime() returns a UNIX 'timestamp.' Returns the # of seconds since jan 1st, 1970
+                        }) 
+                    }
+                },
+                shortDate(date) { //method for formatting date, takes 1 argument
+                    return new Intl.DateTimeFormat('en-US', {timeZone: 'UTC'}).format(date) //Intl.DateTimeFormat() is built in JS library method
+                }
+            },
+            computed: {
+                totalRecordsMessage() { // appears like a function definition. totalRecordsMessage returns a string
+                    
+                    let numberOfRecords = this.activityRecords.length // '.length' calculates how many records, not what's in the array
+                    
+                    if(numberOfRecords === 1) { //if-else statement to account for grammer when there is only 1 record
+                        return '1 record'
+                    } else {
+                        return numberOfRecords + ' records'
+                    }
+                },
+                totalHours() { // calculating display summary for number of hours practiced
+                    let total = 0
+                    this.activityRecords.forEach(function(record) {
+                        total = total + record.hours // loops over every record in activityRecord, sums the hours
+                    })
+                    return total
+                }
+            }
+        }) 
+
+
+        app.mount('#app')
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Sign In</title>
+    <script src="https://unpkg.com/vue@next"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css" type="text/css">
+</head>
+
+<body>
+    <div id="app" v-cloak> <!--Vue directive, hides the app while Vue is loading. Hides the error alerts that can be seen on slower internet connections-->
+
+
+
+        <div class="alert alert-danger" v-if="errors.length > 0"> <!--Bootstrap alert-->
+            <ul>
+                <li v-for="error in errors">{{error}}</li> <!--loops over any error messages for display-->
+            </ul>
+        </div>
+
+        <div class="card add-student m-2 p-2">
+            <h4 class="card-title">Add new student</h4>
+
+            <div class="form-group"> <!--bootsstrap classes-->
+                <label for="name">Name</label>
+   
+
+                <input id="name" class="form-control" v-model.trim="newStudentName"> <!--Bootstrap classes-->
+            </div>
+            <div class="form-group"> 
+                <label for="starID">Star ID</label>
+    
+                <input id="starID" class="form-control" v-model.trim="newStarID"> <!--.trim modifer converts any blank spaces from the beginning or ending of input, which will make the input invalid with validation-->
+            </div>
+
+            <button class="btn btn-primary" v-on:click="addStudent">Add</button> <!--v-on connects the button to the addStudent method-->
+        </div>
+
+        <div class="card student-list m-2 p-2">
+            <h4 class="card-title">Student List</h4>
+            <div id="student-table">
+                <table class="table">
+                    <tr>
+                        <th>Name</th>
+                        <th>StarID</th>
+                        <th>Present?</th>
+                    </tr>
+
+                    <tr v-for='student in students' v-bind:class="{present: student.present, absent: !student.present}"> <!--'student is a made up name for the students data property in the app.
+                                                        ^^ v-bind sets html attributes on elements like classes'-->
+                        <td>{{student.name}}</td> <!--use dot notation to pull out specific parts of objects-->
+                        <td>{{student.starID}}</td> 
+                        <td>
+                            <input type="checkbox" v-model="student.present" v-on:change="arrivedOrLeft(student)"> <!--links checkbox to present data property. v-on will call method everytime the checkbox changes-->
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+        <div v-if="mostRecentStudent.name"> <!--is something in the object? If not, then do nothing-->
+            <div class="alert alert-primary" v-if="mostRecentStudent.present"> <!--if the checkbox is checked, display message. Bootstrap classes-->
+                Welcome, {{mostRecentStudent.name}}
+            </div>
+
+            <div class="alert alert-info" v-else> <!--since the checkbox is true or false, use v-else to display messsage if false. Bootstrap classes-->
+                Goodbye, {{mostRecentStudent.name}}, see you later.
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        let app = Vue.createApp( {
+            data() {
+                return { // data function returns an object of data properies
+                    newStudentName: '',
+                    newStarID: '',
+                    students: [
+                        {name: 'A. Student', starID: 'aa1234bb', present: false},
+                        {name: 'B. Student', starID: 'cc1234dd', present: false},
+                        {name: 'C. Student', starID: 'dd1234ee', present: false}
+                    ],
+                    errors: [],
+                    mostRecentStudent: {} //most recent student who arrived/left
+                }
+            }, 
+            methods: {
+                addStudent() {
+                    this.errors = [] //clear errors array 
+
+                    if(!this.newStudentName){ //validation if no name
+                        this.errors.push('Must enter student name')
+                    }
+
+                    if(!this.newStarID) { //validation if no starID
+                        this.errors.push('Must enter starID')
+                    }
+
+                   if(this.errors.length == 0) {//if no errors in validation, input will be added to student array
+                        let student = {name: this.newStudentName, starID: this.newStarID, present: false} 
+                        this.students.push(student) //.push appends student to the students array
+                        this.newStudentName = '' // clears the form after inputs because v-model uses 2 way data binding
+                        this.newStarID = ''
+
+                        this.students.sort(function(s1, s2){ //sort function must use a function as an argument to sort the objects. s1 & s2 are generic students
+
+                            if(s1.name.toUpperCase() > s2.name.toUpperCase()) {//return positive # if s1 should be sorted after s2.
+                                return 1
+                            }
+
+                            if (s1.name.toUpperCase() < s2.name.toUpperCase()) { //return negative # if s1 should be sorted before s2. Lower case names are sorted after capitalized beacause of unicode values, therefore, convert.
+                                return -1
+                            }
+
+                            return 0 //0 if order us equivalent 
+                        })  
+                    }
+                },
+                arrivedOrLeft(student) {
+                    this.mostRecentStudent = student
+                }
+            }
+        })
+
+        app.mount('#app')
+    
+
+
+    </script>
+
+</body>
+
+</html>
+
+
+                
