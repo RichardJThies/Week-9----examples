@@ -1,0 +1,18 @@
+1.How do you finish the styling for the table rows. It seems like I almost have it but they aren't applying
+
+2. Is the checkbox (completed) property supposed to go in the record object(?) or the wider data() method? When
+I had it in the wider method, it seemed to respond to the v-model, but inside the record{}, it doesn't 
+
+3. line 114~, how does pulling in the notes string work? I don't understand if it is supposed to be outside the
+recordsActivity array, or in the wider data() method.
+
+4. How do you change the textarea to be adjustable by the user? We did this weeks ago but I can't remember how
+
+5. Did we learn about limiting the number of characters in a display? What week?
+
+6. How does the notes: bit go ontop of the textarea?
+
+
+
+
+

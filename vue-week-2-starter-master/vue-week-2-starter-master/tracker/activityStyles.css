@@ -1,0 +1,32 @@
+#records {
+    max-height: 250px;
+    overflow: scroll;
+}
+
+[v-cloak] { /*sets v-cloak to be hidden while Vue is loading*/
+    display: none;
+}
+
+.sketching {
+    color: gray;
+    font-style: italic;
+    background-color: aliceblue;
+}
+
+.drawing {
+    color: black;
+    font-weight: bold;
+    background-color: bisque;
+}
+
+.painting {
+    color: indianred;
+    font-weight: bold;
+    background-color: greenyellow;
+}
+
+#noteBox {
+    height: 50px;
+    width: 800px;
+}
+

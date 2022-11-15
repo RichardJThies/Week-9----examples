@@ -53,7 +53,7 @@
                         <td>{{student.name}}</td> <!--use dot notation to pull out specific parts of objects-->
                         <td>{{student.starID}}</td> 
                         <td>
-                            <input type="checkbox" v-model="student.present" v-on:change="arrivedOrLeft(student)"> <!--links checkbox to present data property. v-on will call method everytime the checkbox changes-->
+                            <input type="checkbox" v-model="student.present" v-on:change="arrivedOrLeft(student)"> <!--v-model links checkbox to present data property. v-on will call method everytime the checkbox changes-->
                         </td>
                     </tr>
                 </table>

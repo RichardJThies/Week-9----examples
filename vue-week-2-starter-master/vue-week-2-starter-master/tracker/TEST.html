@@ -52,11 +52,12 @@
                     <label class="form-label" for="type">What type?</label>
 
                     <select class="form-control" v-model="type"> <!--v-model connects type to type array-->
-                        <option v-for="activityType in types" v-bind:class="">{{activityType}}</option> <!--v-for loops through types array, creating 1 option for each activity type in array-->
+                        <option v-for="activityType in types" v-bind:class="{Sketching: types.sketching, Drawing: types.drawing, Painting: types.painting}">{{activityType}}</option> <!--v-for loops through types array, 
+                                                                                                                                                                                    creating 1 option for each activity type in array-->
                     </select>
                 </div>
 
-                <div class="form-label pb-2">
+                <div class="form-label pb-2"> <!--This label is NOT in the example output for some reason-->
                     What media?
                 </div>
 
@@ -70,6 +71,14 @@
                     <input id="media2" class="form-check-input" type="radio" value="Digital" v-model="medium"> <!--v-model connects radio buttons to app. Value attribute ensures radio button is only one or the other-->
                     
                     <label class="form-check-label" for="media2">Digital</label>
+                </div>
+
+                <div><!--CHECKBOX INPUT DIV-->
+                    <input type="checkbox" v-model="activityRecords.completed"> Completed?
+                </div>
+                
+                <div><!--TEXTAREA NOTES DIV-->
+                    <input id="noteBox" type="textarea" name="noteBox" v-model="notes"> Notes: <!--how to get Notes: ontop of textarea?-->
                 </div>
 
                 <div>
@@ -93,6 +102,8 @@
                             <th>How many hours?</th>
                             <th>Type</th>
                             <th>Media</th>
+                            <th>Completed?</th>
+                            <th>Notes</th>
                         </tr>
 
                         <tr v-for="record in activityRecords"> <!--v-for creates one table row for each activity record -->
@@ -100,6 +111,8 @@
                             <td>{{record.hours}}</td>
                             <td>{{record.type}}</td>
                             <td>{{record.medium}}</td>
+                            <!-- <td>{{records.}}</td>-->
+                            <td>{{notes}}</td>
                         </tr>
                     </table>
                 </div>
@@ -131,7 +144,7 @@
                     hours: 1,
                     type: 'Sketching',
                     medium: 'Traditional',
-
+                    notes: '',
                     types: ['Sketching', 'Drawing', 'Painting'], //array items used in option select choices
 
                     errors: [] // collects errots for validation
@@ -148,24 +161,25 @@
                         this.errors.push('Select a valid date, today or in the past.')
                     }
 
-                    if(this.hours <= 0 || this.hours > 24) { 
+                    if(this.hours <= 0 || this.hours > 24) {  // validation to keep hrs in the right bandwidth
                         this.errors.push('The number of hours must be greater than or equal to 24')
                     }
 
-                    if(!this.type) {
-                        this.errors,push('Select a type')
+                    if(!this.type) { // validation to ensure a type is selected
+                        this.errors.push('Select a type')
                     }
 
-                    if(!this.medium) {
+                    if(!this.medium) { // validation to ensure a medium is selected
                         this.errors.push('Select a medium')
                     }
 
                     if(this.errors.length === 0){
                         let record = {
+                            completed: false, // property for the checkbox
                             date: date,
                             hours: this.hours,
                             type: this.type,
-                            medium: this.medium
+                            medium: this.medium,
                         }
 
                         this.activityRecords.push(record) // appends to empty array
