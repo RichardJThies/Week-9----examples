@@ -111,8 +111,8 @@
                         <td>{{record.hours}}</td>
                         <td>{{record.type}}</td>
                         <td>{{record.medium}}</td>
-                        <!-- <td>{{records.}}</td>-->
-                        <td>{{notes}}</td>
+                        <!-- <td>{{records.}}</td> -->
+                        <td>{{shortNote(record.notes)}}</td>
                     </tr>
                 </table>
             </div>
@@ -180,6 +180,7 @@
                         hours: this.hours,
                         type: this.type,
                         medium: this.medium,
+                        notes: this.notes
                     }
 
                     this.activityRecords.push(record) // appends to empty array
@@ -195,8 +196,14 @@
                 return new Intl.DateTimeFormat('en-US', {timeZone: 'UTC'}).format(date) //Intl.DateTimeFormat() is built in JS library method
             },
 
-            shortNote() {// method for limiting note to 40 characters
-
+            shortNote(note) {// method for limiting note to 40 characters when displayed
+                if(note.length > 40) {//return first 40 chars
+                    note = note.substring(0, 40) + '...' //substring 
+                    return note
+                } else {
+                    return note
+                }
+                
             }
 
         },

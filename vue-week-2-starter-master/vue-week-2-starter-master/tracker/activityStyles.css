@@ -7,19 +7,19 @@
     display: none;
 }
 
-.sketching {
+.Sketching {
     color: gray;
     font-style: italic;
     background-color: aliceblue;
 }
 
-.drawing {
+.Drawing {
     color: black;
     font-weight: bold;
     background-color: bisque;
 }
 
-.painting {
+.Painting {
     color: indianred;
     font-weight: bold;
     background-color: greenyellow;
